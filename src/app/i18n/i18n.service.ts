@@ -5,6 +5,8 @@ import { Subscription } from 'rxjs';
 import { Logger } from '@core/logger.service';
 import enUS from '../../translations/en-US.json';
 import frFR from '../../translations/fr-FR.json';
+import spanSP from '../../translations/span-SP.json';
+import gerGR from '../../translations/ger-GR.json';
 
 const log = new Logger('I18nService');
 const languageKey = 'language';
@@ -20,10 +22,9 @@ export function extract(s: string) {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class I18nService {
-
   defaultLanguage!: string;
   supportedLanguages!: string[];
 
@@ -33,6 +34,8 @@ export class I18nService {
     // Embed languages to avoid extra HTTP requests
     translateService.setTranslation('en-US', enUS);
     translateService.setTranslation('fr-FR', frFR);
+    translateService.setTranslation('span-SP', spanSP);
+    translateService.setTranslation('ger-GR', gerGR);
   }
 
   /**
@@ -47,8 +50,9 @@ export class I18nService {
     this.language = '';
 
     // Warning: this subscription will always be alive for the app's lifetime
-    this.langChangeSubscription = this.translateService.onLangChange
-      .subscribe((event: LangChangeEvent) => { localStorage.setItem(languageKey, event.lang); });
+    this.langChangeSubscription = this.translateService.onLangChange.subscribe((event: LangChangeEvent) => {
+      localStorage.setItem(languageKey, event.lang);
+    });
   }
 
   /**
@@ -73,7 +77,7 @@ export class I18nService {
     // If no exact match is found, search without the region
     if (language && !isSupportedLanguage) {
       language = language.split('-')[0];
-      language = this.supportedLanguages.find(supportedLanguage => supportedLanguage.startsWith(language)) || '';
+      language = this.supportedLanguages.find((supportedLanguage) => supportedLanguage.startsWith(language)) || '';
       isSupportedLanguage = Boolean(language);
     }
 
@@ -93,5 +97,4 @@ export class I18nService {
   get language(): string {
     return this.translateService.currentLang;
   }
-
 }
